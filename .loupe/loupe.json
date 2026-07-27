@@ -1,0 +1,20 @@
+{
+  "$schema": "https://loupe.dev/schema/repo-pack-v1.json",
+  "workspace": {
+    "slug": "test-org",
+    "name": "Test org"
+  },
+  "apiUrl": "https://api.loupeai.dev",
+  "enrolmentKey": "loupe_repo_gAW86rE5PYg6mkxpUntZL8er5jd6tiHj8pnFiGmt_6A",
+  "runtime": "cli",
+  "cli": {
+    "version": "0.1.0",
+    "downloadUrl": "https://ac4l8kelvyo5iskp.public.blob.vercel-storage.com/cli",
+    "checksum": "ed6076dd7df2fb540644b315f60cbdd9e22ce35c889d59681e6d31af33286bd6"
+  },
+  "tools": [
+    "claude-code",
+    "cursor"
+  ],
+  "scope": "global"
+}
