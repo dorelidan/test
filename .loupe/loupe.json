@@ -10,7 +10,7 @@
   "cli": {
     "version": "0.1.0",
     "downloadUrl": "https://ac4l8kelvyo5iskp.public.blob.vercel-storage.com/cli",
-    "checksum": "b55fe9364a15a25730ab84a072c97c20d4bfcbb19a420de7929a8ff5da297f0f"
+    "checksum": "d77f1601c54c88cb5a207e447be1ae848f0fb143453db5aa0557605a6ef020bd"
   },
   "tools": [
     "claude-code",
