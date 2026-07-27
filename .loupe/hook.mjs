@@ -5,7 +5,7 @@
 // starts a checksum-verified download in a detached process and exits 0, so the
 // first prompt after a clone is uncaptured rather than slow.
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -15,7 +15,9 @@ const FETCH_SOURCE = [
   "const fs = require('fs'), crypto = require('crypto');",
   "(async () => {",
   "  try {",
-  "    const response = await fetch(url);",
+  // Detached with its output discarded: an unbounded wait would leave a process
+  // alive until the machine restarts, holding the lock the whole time.
+  "    const response = await fetch(url, { signal: AbortSignal.timeout(120000) });",
   "    if (!response.ok) return;",
   "    const body = Buffer.from(await response.arrayBuffer());",
   "    if (crypto.createHash('sha256').update(body).digest('hex') !== digest) return;",
@@ -58,10 +60,24 @@ async function main() {
   if (typeof digest !== "string" || digest.length === 0) return;
   if (typeof downloadUrl !== "string" || downloadUrl.length === 0) return;
 
-  // mkdir is atomic, so only the first of several concurrent hooks downloads.
   const lock = join(cacheDir, ".downloading-" + version);
   try {
     mkdirSync(cacheDir, { recursive: true });
+  } catch {
+    return;
+  }
+
+  // The downloader releases the lock itself, which cannot happen if it was
+  // killed. Left alone, the leftover directory reads as "already downloading"
+  // and this bootstrap would never install the runtime again.
+  try {
+    if (Date.now() - statSync(lock).mtimeMs > 10 * 60_000) {
+      rmSync(lock, { recursive: true, force: true });
+    }
+  } catch {}
+
+  // mkdir is atomic, so only the first of several concurrent hooks downloads.
+  try {
     mkdirSync(lock);
   } catch {
     return;
