@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": "node .loupe/hook.mjs cursor-prompt",
+        "timeout": 8,
+        "failClosed": false
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": "node .loupe/hook.mjs cursor-session-start",
+        "timeout": 4,
+        "failClosed": false
+      }
+    ],
+    "stop": [
+      {
+        "command": "node .loupe/hook.mjs cursor-stop",
+        "timeout": 4,
+        "failClosed": false
+      }
+    ],
+    "postToolUse": [
+      {
+        "command": "node .loupe/hook.mjs cursor-tool",
+        "timeout": 3,
+        "failClosed": false,
+        "matcher": "Shell|Write|Delete|Task|MCP:"
+      }
+    ],
+    "postToolUseFailure": [
+      {
+        "command": "node .loupe/hook.mjs cursor-tool-failed",
+        "timeout": 3,
+        "failClosed": false,
+        "matcher": "Shell|Write|Delete|Task|MCP:"
+      }
+    ]
+  }
+}
